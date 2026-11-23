@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tasks · Focus</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="app-page">
+    <div class="app-shell">
+        <aside class="sidebar">
+            <div class="brand brand-dark"><span class="brand-mark">F</span> Focus</div>
+            <nav class="sidebar-nav"><a class="nav-item active" href="/task-manager"><span>▦</span> My tasks</a><a class="nav-item" href="#new-task"><span>＋</span> Add a task</a></nav>
+            <div class="sidebar-bottom"><div class="tip-card"><span class="tip-icon">✦</span><strong>Small steps, big progress.</strong><span>Keep your next action clear.</span></div><a class="sign-out" href="/login">Sign out <span>↗</span></a></div>
+        </aside>
+        <main class="content-area">
+            <header class="topbar"><div><p class="eyebrow">YOUR WORKSPACE</p><h1>My tasks</h1></div><div class="avatar">F</div></header>
+            <section class="stats-grid"><div class="stat-card"><span class="stat-icon purple">◷</span><div><strong id="total-count">0</strong><span>Total tasks</span></div></div><div class="stat-card"><span class="stat-icon green">✓</span><div><strong id="completed-count">0</strong><span>Completed</span></div></div><div class="stat-card"><span class="stat-icon orange">•</span><div><strong id="remaining-count">0</strong><span>Remaining</span></div></div></section>
+            <section class="new-task-card" id="new-task"><div class="section-heading"><div><p class="eyebrow">PLAN YOUR NEXT MOVE</p><h2>Add a new task</h2></div><span class="sparkle">✦</span></div><form id="create-task-form" class="create-form"><input id="title" type="text" placeholder="What needs to be done?" required><input id="description" type="text" placeholder="Add a short description (optional)"><button class="button button-primary" type="submit">Add task <span>＋</span></button></form></section>
+            <div class="list-heading"><div><h2>All tasks</h2><span id="list-subtitle" class="muted">Loading your tasks…</span></div><p id="message" class="status-message"></p></div>
+            <section id="tasks" class="task-list"></section>
+        </main>
+    </div>
+    <script>
+        const taskList = document.querySelector("#tasks"), message = document.querySelector("#message");
+        const escapeHtml = value => String(value).replaceAll("&", "&amp;").replaceAll("<", "&lt;").replaceAll(">", "&gt;").replaceAll('"', "&quot;").replaceAll("'", "&#039;");
+        function showMessage(text, error = false) { message.textContent = text; message.className = `status-message ${error ? "error" : "success"}`; setTimeout(() => message.textContent = "", 3000); }
+        async function loadTasks() {
+            const response = await fetch("/tasks"); if (response.status === 401) { window.location.href = "/login"; return; }
+            const tasks = await response.json(), completed = tasks.filter(task => task.completed).length;
+            document.querySelector("#total-count").textContent = tasks.length; document.querySelector("#completed-count").textContent = completed; document.querySelector("#remaining-count").textContent = tasks.length - completed;
+            document.querySelector("#list-subtitle").textContent = tasks.length ? `${tasks.length} task${tasks.length === 1 ? "" : "s"} in your list` : "Your list is clear";
+            taskList.innerHTML = tasks.length ? tasks.map(task => `<article class="task-card ${task.completed ? "is-complete" : ""}"><form class="update-task-form" data-id="${task.id}"><label class="check-wrap"><input name="completed" type="checkbox" ${task.completed ? "checked" : ""}><span class="checkmark"></span></label><div class="task-fields"><input class="task-title" name="title" value="${escapeHtml(task.title)}" required><textarea name="description" placeholder="Add a description">${escapeHtml(task.description)}</textarea></div><button class="icon-button" type="submit" title="Save changes">✓</button></form><button class="delete-task-button" data-id="${task.id}" title="Delete task">×</button></article>`).join("") : `<div class="empty-state"><div class="empty-icon">✓</div><h3>Nothing on your plate</h3><p>Add your first task above and start making progress.</p></div>`;
+        }
+        document.querySelector("#create-task-form").addEventListener("submit", async event => { event.preventDefault(); const response = await fetch("/tasks", {method: "POST", headers: {"Content-Type": "application/json"}, body: JSON.stringify({title: title.value, description: description.value, completed: false})}); if (!response.ok) { showMessage("Could not create task", true); return; } event.target.reset(); showMessage("Task added"); await loadTasks(); });
+        taskList.addEventListener("submit", async event => { if (!event.target.classList.contains("update-task-form")) return; event.preventDefault(); const form = event.target, response = await fetch(`/tasks/${form.dataset.id}`, {method: "PUT", headers: {"Content-Type": "application/json"}, body: JSON.stringify({title: form.elements.title.value, description: form.elements.description.value, completed: form.elements.completed.checked})}); showMessage(response.ok ? "Task updated" : "Could not update task", !response.ok); if (response.ok) await loadTasks(); });
+        taskList.addEventListener("click", async event => { if (!event.target.classList.contains("delete-task-button")) return; const response = await fetch(`/tasks/${event.target.dataset.id}`, {method: "DELETE"}); showMessage(response.ok ? "Task deleted" : "Could not delete task", !response.ok); if (response.ok) await loadTasks(); });
+        loadTasks();
+    </script>
+</body>
+</html>

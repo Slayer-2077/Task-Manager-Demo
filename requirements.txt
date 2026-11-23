@@ -1,0 +1,7 @@
+fastapi==0.165.0
+uvicorn[standard]==0.54.0
+SQLAlchemy[asyncio]==2.1.9
+aiosqlite==0.22.1
+itsdangerous==2.2.0
+Jinja2==3.1.6
+python-multipart==0.0.34

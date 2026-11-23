@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign in · Focus</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="auth-page">
+    <main class="auth-layout">
+        <section class="auth-visual">
+            <div class="brand brand-light"><span class="brand-mark">F</span> Focus</div>
+            <div class="visual-copy"><p class="eyebrow">WORK WITH CLARITY</p><h1>Make progress on what matters.</h1><p>Organize your day, keep momentum, and turn your plans into finished work.</p></div>
+            <div class="visual-orbit orbit-one"></div><div class="visual-orbit orbit-two"></div>
+        </section>
+        <section class="auth-panel"><div class="auth-card">
+            <div class="brand brand-dark"><span class="brand-mark">F</span> Focus</div>
+            <p class="eyebrow">WELCOME BACK</p><h2>Sign in to your workspace</h2><p class="muted">Continue where you left off.</p>
+            <form action="/login" method="post" class="stack-form">
+                <label for="username">Username</label><input type="text" id="username" name="username" placeholder="Your username" required>
+                <label for="email">Email address</label><input type="email" id="email" name="email" placeholder="you@example.com" required>
+                <label for="password">Password</label><input type="password" id="password" name="password" placeholder="Enter your password" required>
+                <button class="button button-primary" type="submit">Sign in <span>→</span></button>
+            </form>
+            <p class="auth-footer">New to Focus? <a href="/register">Create an account</a></p>
+        </div></section>
+    </main>
+</body>
+</html>

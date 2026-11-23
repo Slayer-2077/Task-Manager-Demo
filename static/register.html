@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create account · Focus</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="auth-page">
+    <main class="auth-layout">
+        <section class="auth-visual">
+            <div class="brand brand-light"><span class="brand-mark">F</span> Focus</div>
+            <div class="visual-copy"><p class="eyebrow">YOUR WORKSPACE</p><h1>A calmer way to get things done.</h1><p>Start with a clear list and build a workflow that feels like yours.</p></div>
+            <div class="visual-orbit orbit-one"></div><div class="visual-orbit orbit-two"></div>
+        </section>
+        <section class="auth-panel"><div class="auth-card">
+            <div class="brand brand-dark"><span class="brand-mark">F</span> Focus</div>
+            <p class="eyebrow">GET STARTED</p><h2>Create your account</h2><p class="muted">It only takes a minute to get organized.</p>
+            <form action="/register" method="post" class="stack-form">
+                <label for="username">Username</label><input type="text" id="username" name="username" placeholder="Choose a username" required>
+                <label for="email">Email address</label><input type="email" id="email" name="email" placeholder="you@example.com" required>
+                <label for="password">Password</label><input type="password" id="password" name="password" placeholder="Create a password" required>
+                <button class="button button-primary" type="submit">Create account <span>→</span></button>
+            </form>
+            <p class="auth-footer">Already have an account? <a href="/login">Sign in</a></p>
+        </div></section>
+    </main>
+</body>
+</html>
